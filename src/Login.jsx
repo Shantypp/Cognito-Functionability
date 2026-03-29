@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { signIn, getCurrentUser } from "aws-amplify/auth";
+import { signIn, confirmSignIn, getCurrentUser } from "aws-amplify/auth";
 import { Link } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+
+  const [mfaCode, setMfaCode] = useState("");
+  const [showMfa, setShowMfa] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -22,10 +25,16 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      await signIn({
+      const result = await signIn({
         username: email,
         password,
       });
+
+      if (result.nextStep?.signInStep === "CONFIRM_SIGN_IN_WITH_TOTP_CODE") {
+        setShowMfa(true);
+        setMessage("Ingresa el código MFA de tu app autenticadora");
+        return;
+      }
 
       window.location.href = "/dashboard";
     } catch (error) {
@@ -39,6 +48,19 @@ export default function Login() {
       } else {
         setMessage(error.message || "Error al iniciar sesión");
       }
+    }
+  };
+
+  const handleConfirmMfa = async () => {
+    try {
+      await confirmSignIn({
+        challengeResponse: mfaCode,
+      });
+
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.error(error);
+      setMessage(error.message || "Error al validar MFA");
     }
   };
 
@@ -64,14 +86,27 @@ export default function Login() {
 
       <button onClick={handleLogin}>Iniciar sesión</button>
 
-      <br />
-      
+      {showMfa && (
+        <>
+          <br /><br />
+          <input
+            type="text"
+            placeholder="Código MFA"
+            value={mfaCode}
+            onChange={(e) => setMfaCode(e.target.value)}
+          />
+          <br /><br />
+          <button onClick={handleConfirmMfa}>Confirmar MFA</button>
+        </>
+      )}
+
+      <br /><br />
       <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
 
       <p>{message}</p>
 
       <Link to="/">Volver</Link>
-    
-    </div>
+      
+      </div>
   );
 }
