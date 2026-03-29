@@ -3,6 +3,9 @@ import Register from "./Register";
 import ConfirmRegister from "./ConfirmRegister";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
+import ForgotPassword from "./ForgotPassword";
+
+
 
 function Home() {
   return (
@@ -25,6 +28,7 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/confirm" element={<ConfirmRegister />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
     </Routes>
   );
 }

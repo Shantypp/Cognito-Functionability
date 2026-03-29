@@ -64,9 +64,14 @@ export default function Login() {
 
       <button onClick={handleLogin}>Iniciar sesión</button>
 
+      <br />
+      
+      <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
+
       <p>{message}</p>
 
       <Link to="/">Volver</Link>
+    
     </div>
   );
 }
