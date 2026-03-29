@@ -12,18 +12,21 @@ export default function SetupMFA() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const loadSecret = async () => {
-      try {
-        const totpSetupDetails = await setUpTOTP();
-        setSecret(totpSetupDetails.sharedSecret);
-      } catch (error) {
-        console.error(error);
-        setMessage(error.message || "Error generando MFA");
-      }
-    };
+  const loadSecret = async () => {
+    try {
+      const totpSetupDetails = await setUpTOTP();
 
-    loadSecret();
-  }, []);
+      console.log("TOTP DETAILS:", totpSetupDetails); // 👈 IMPORTANTE
+
+      setSecret(totpSetupDetails.sharedSecret);
+    } catch (error) {
+      console.error("ERROR TOTP:", error);
+      setMessage(error.message || "Error generando MFA");
+    }
+  };
+
+  loadSecret();
+}, []);
 
   const handleVerify = async () => {
     try {
