@@ -8,9 +8,11 @@ export default function ProtectedRoute({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await getCurrentUser();
+        const user = await getCurrentUser();
+        console.log("Usuario autenticado:", user);
         setIsAuthenticated(true);
       } catch (error) {
+        console.log("Sin sesión:", error);
         setIsAuthenticated(false);
       }
     };

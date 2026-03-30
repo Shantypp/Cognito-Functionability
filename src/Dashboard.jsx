@@ -3,8 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const handleLogout = async () => {
-    await signOut();
-    window.location.href = "/login";
+    try {
+      await signOut({ global: true });
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Error cerrando sesión:", error);
+    }
   };
 
   return (

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
-import { signIn, confirmSignIn, getCurrentUser } from "aws-amplify/auth";
-import { Link } from "react-router-dom";
+import {
+  signIn,
+  confirmSignIn,
+  getCurrentUser,
+  fetchAuthSession,
+} from "aws-amplify/auth";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,21 +15,25 @@ export default function Login() {
   const [mfaCode, setMfaCode] = useState("");
   const [showMfa, setShowMfa] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const checkUser = async () => {
       try {
         await getCurrentUser();
-        window.location.href = "/dashboard";
+        navigate("/profile");
       } catch (error) {
         // no hay sesión activa
       }
     };
 
     checkUser();
-  }, []);
+  }, [navigate]);
 
   const handleLogin = async () => {
     try {
+      setMessage("");
+
       const result = await signIn({
         username: email,
         password,
@@ -36,15 +45,16 @@ export default function Login() {
         return;
       }
 
-      window.location.href = "/dashboard";
+      const session = await fetchAuthSession();
+      console.log("ID Token:", session.tokens?.idToken?.toString());
+      console.log("Access Token:", session.tokens?.accessToken?.toString());
+
+      navigate("/profile");
     } catch (error) {
       console.error(error);
 
-      if (
-        error.message &&
-        error.message.includes("already a signed in user")
-      ) {
-        window.location.href = "/dashboard";
+      if (error.message && error.message.includes("already a signed in user")) {
+        navigate("/profile");
       } else {
         setMessage(error.message || "Error al iniciar sesión");
       }
@@ -53,11 +63,17 @@ export default function Login() {
 
   const handleConfirmMfa = async () => {
     try {
+      setMessage("");
+
       await confirmSignIn({
         challengeResponse: mfaCode,
       });
 
-      window.location.href = "/dashboard";
+      const session = await fetchAuthSession();
+      console.log("ID Token:", session.tokens?.idToken?.toString());
+      console.log("Access Token:", session.tokens?.accessToken?.toString());
+
+      navigate("/profile");
     } catch (error) {
       console.error(error);
       setMessage(error.message || "Error al validar MFA");
@@ -106,7 +122,6 @@ export default function Login() {
       <p>{message}</p>
 
       <Link to="/">Volver</Link>
-      
-      </div>
+    </div>
   );
 }
