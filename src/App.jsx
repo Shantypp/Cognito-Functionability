@@ -5,8 +5,7 @@ import Login from "./Login";
 import Dashboard from "./Dashboard";
 import ForgotPassword from "./ForgotPassword";
 import SetupMFA from "./SetupMFA";
-
-
+import Profile from "./Profile";
 
 function Home() {
   return (
@@ -17,6 +16,8 @@ function Home() {
       <Link to="/register">Registro</Link>
       <br />
       <Link to="/confirm">Confirmar cuenta</Link>
+      <br />
+      <Link to="/profile">Perfil</Link>
     </div>
   );
 }
@@ -31,6 +32,7 @@ export default function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/setup-mfa" element={<SetupMFA />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   );
 }
