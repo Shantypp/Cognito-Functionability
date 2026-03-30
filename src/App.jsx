@@ -9,15 +9,18 @@ import Profile from "./Profile";
 
 function Home() {
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Inicio</h1>
-      <Link to="/login">Login</Link>
-      <br />
-      <Link to="/register">Registro</Link>
-      <br />
-      <Link to="/confirm">Confirmar cuenta</Link>
-      <br />
-      <Link to="/profile">Perfil</Link>
+    <div className="page-container">
+      <div className="card">
+        <h1>Portal de autenticación</h1>
+        <p>Aplicación web con AWS Cognito y React.</p>
+
+        <div className="link-group">
+          <Link className="text-link" to="/login">Login</Link>
+          <Link className="text-link" to="/register">Registro</Link>
+          <Link className="text-link" to="/confirm">Confirmar cuenta</Link>
+          <Link className="text-link" to="/forgot-password">Recuperar contraseña</Link>
+        </div>
+      </div>
     </div>
   );
 }

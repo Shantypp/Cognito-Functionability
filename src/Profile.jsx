@@ -1,47 +1,51 @@
 import { useEffect, useState } from "react";
-import { fetchUserAttributes, fetchAuthSession } from "aws-amplify/auth";
+import { getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
 import { Link } from "react-router-dom";
 
 export default function Profile() {
-  const [user, setUser] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [attributes, setAttributes] = useState({});
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const loadUser = async () => {
+    const loadProfile = async () => {
       try {
-        const attributes = await fetchUserAttributes();
-        setUser(attributes);
-
-        const session = await fetchAuthSession();
-        console.log("ID Token:", session.tokens?.idToken?.toString());
-        console.log("Access Token:", session.tokens?.accessToken?.toString());
+        const user = await getCurrentUser();
+        const attrs = await fetchUserAttributes();
+        setUserInfo(user);
+        setAttributes(attrs);
       } catch (error) {
         console.error(error);
-        setMessage("Error al cargar los datos del usuario");
+        setMessage(error.message || "Error cargando perfil");
       }
     };
 
-    loadUser();
+    loadProfile();
   }, []);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Perfil del usuario</h1>
+    <div className="page-container">
+      <div className="card">
+        <h1>Perfil</h1>
 
-      {message && <p>{message}</p>}
+        {message && <p className="message">{message}</p>}
 
-      {user && (
-        <div>
-          <p><strong>Nombre:</strong> {user.name}</p>
-          <p><strong>Correo:</strong> {user.email}</p>
-          <p><strong>Número:</strong> {user.phone_number}</p>
-          <p><strong>Cédula:</strong> {user["custom:cedula"]}</p>
-          <p><strong>Dirección:</strong> {user["custom:direccion"]}</p>
+        {userInfo && (
+          <>
+            <p><strong>Usuario:</strong> {userInfo.username}</p>
+            <p><strong>Login:</strong> {userInfo.signInDetails?.loginId}</p>
+          </>
+        )}
+
+        <p><strong>Email:</strong> {attributes.email}</p>
+        <p><strong>Email verificado:</strong> {attributes.email_verified}</p>
+
+        <div className="link-group">
+          <Link className="text-link" to="/dashboard">
+            Volver al dashboard
+          </Link>
         </div>
-      )}
-
-      <br />
-      <Link to="/">Volver</Link>
+      </div>
     </div>
   );
 }

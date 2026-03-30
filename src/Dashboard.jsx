@@ -3,31 +3,30 @@ import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const handleLogout = async () => {
-    try {
-      await signOut({ global: true });
-      window.location.href = "/login";
-    } catch (error) {
-      console.error("Error cerrando sesión:", error);
-    }
+    await signOut();
+    window.location.href = "/login";
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Dashboard</h1>
-      <p>Usuario autenticado ✅</p>
+    <div className="page-container">
+      <div className="dashboard-card">
+        <h1>Dashboard</h1>
+        <p>Bienvenido. Ya estás autenticado en la aplicación.</p>
 
-      <br />
-      <Link to="/profile">
-        <button>Consultar perfil</button>
-      </Link>
+        <div className="actions">
+          <Link to="/profile">
+            <button className="button">Consultar perfil</button>
+          </Link>
 
-      <br /><br />
-      <Link to="/setup-mfa">
-        <button>Activar MFA</button>
-      </Link>
+          <Link to="/setup-mfa">
+            <button className="secondary-button">Activar MFA</button>
+          </Link>
 
-      <br /><br />
-      <button onClick={handleLogout}>Cerrar sesión</button>
+          <button className="secondary-button" onClick={handleLogout}>
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
