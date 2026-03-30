@@ -12,10 +12,18 @@ export default function Dashboard() {
       <h1>Dashboard</h1>
       <p>Usuario autenticado ✅</p>
 
-      <button onClick={handleLogout}>Cerrar sesión</button>
+      <br />
+      <Link to="/profile">
+        <button>Consultar perfil</button>
+      </Link>
 
       <br /><br />
-      <Link to="/">Volver</Link>
+      <Link to="/setup-mfa">
+        <button>Activar MFA</button>
+      </Link>
+
+      <br /><br />
+      <button onClick={handleLogout}>Cerrar sesión</button>
     </div>
   );
 }
